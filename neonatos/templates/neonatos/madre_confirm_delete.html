@@ -1,0 +1,10 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<h4 class="mb-3">Eliminar Madre</h4>
+<div class="alert alert-warning">¿Confirmas eliminar a <strong>{{ object }}</strong>? Esta acción no se puede deshacer.</div>
+<form method="post">{% csrf_token %}
+  <a class="btn btn-secondary" href="{% url 'neonatos:madre_detail' object.pk %}">Cancelar</a>
+  <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>
+{% endblock %}

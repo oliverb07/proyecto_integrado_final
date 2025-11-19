@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body_class %}gestion-usuarios{% endblock %}
+{% block content %}
+<div class="user-container">
+    <h2>
+    {% if form.instance.pk %}
+        Editar Usuario
+    {% else %}
+        Crear Usuario
+    {% endif %}
+    </h2>
+
+    <!-- Formulario -->
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">
+        {% if form.instance.pk %}Actualizar{% else %}Crear{% endif %}
+    </button>
+    </form>
+
+    <!-- Link de regreso a la lista de usuarios -->
+    <p>
+    <a href="{% url 'gestion_roles:gestion_usuarios' %}">Volver a la lista de usuarios</a>
+    </p>
+
+    {% endblock %}
+</div>

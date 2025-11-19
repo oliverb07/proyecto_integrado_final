@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Huellas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/icono_huella.png' %}" type="image/x-icon">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="position-relative text-white py-3 text-center">
+    <h2>🩺 Proyecto Huellas</h2>
+    <p>Sistema de Trazabilidad Obstetricia y RN</p>
+
+    {% if request.user.is_authenticated %}
+    <div class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex align-items-center">
+
+        {% if request.user.rol == "Supervisor" %}
+            <span class="text-white fw-semibold me-3">
+                🧾 Supervisor: {{ request.user.nombre }}
+            </span>
+        {% elif request.user.rol == "Administrador" %}
+            <span class="text-white fw-semibold me-3">
+                🛠️ Administrador: {{ request.user.nombre }}
+            </span>
+        {% endif %}
+        <form action="{% url 'gestion_roles:logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-logout">Cerrar Sesión</button>
+        </form>
+    </div>
+    {% endif %}
+</header>
+{% if request.user.rol == "Supervisor" %}
+<!--Nav principal-->
+<header class="position-relative text-white py-3 text-center">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="position-absolute top 50 end 0 translate-middle-y me-3">
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'GeneradorReporte:inicio' %}">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'GeneradorReporte:ver_bitacora' %}">Historial Logs</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'GeneradorReporte:reportes' %}">Reporte Bs22</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'GeneradorReporte:reporte_rem_a09' %}">Reporte A09</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'GeneradorReporte:reporte_rem_a04' %}">Reporte A04</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+</header>
+{% endif %}
+
+{% if request.user.rol == "Administrador" %}
+<!--Nav principal-->
+<header class="position-relative text-white py-3 text-center">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="position-absolute top 50 end 0 translate-middle-y me-3">
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'gestion_roles:gestion_usuarios' %}">Inicio</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+</header>
+{% endif %}
+
+    <main class="hero-content container text-white text-center mt-5">
+        {% block content %}
+        <h3>Bienvenido al sistema</h3>
+        <p class="lead">Desde aquí puedes acceder al módulo de generación de reportes y historial de logs.</p>
+        <div class="contenedor-botones">
+            <a href="{% url 'GeneradorReporte:ver_bitacora' %}" class="boton celeste">
+                <i class="fas fa-history"></i> Ver Historial de Logs
+            </a>
+
+            <a href="{% url 'GeneradorReporte:reportes' %}" class="boton verde">
+                <i class="fas fa-book-medical"></i> Generar Reporte REM Bs22
+            </a>
+
+            <a href="{% url 'GeneradorReporte:reporte_rem_a09' %}" class="boton azul">
+                <i class="fas fa-file-medical"></i> Generar Reporte REM A09 (Egresos)
+            </a>
+
+            <a href="{% url 'GeneradorReporte:reporte_rem_a04' %}" class="boton amarillo">
+                <i class="fas fa-heartbeat"></i> Generar Reporte REM A04 (Defunciones)
+            </a>
+
+            
+        </div>
+
+        
+        {% endblock %}
+    </main>
+<footer class="text-center text-white py-3 mt-5">
+    © 2025 Proyecto Huellas — Sistema de Trazabilidad Obstetricia y RN
+</footer>
+</body>
+</html>

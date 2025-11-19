@@ -1,0 +1,120 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-info text-white">
+    <h5 class="mb-0">Registrar Recién Nacido</h5>
+  </div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- Bloque principal de datos del RN -->
+      {% for field in form %}
+        {% if field.name != 'fallecido' and field.name != 'tipo_fallecimiento' %}
+          <div class="mb-3" {% if field.name == 'parto' %}style="display:none"{% endif %}>
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors|striptags }}</div>
+            {% endif %}
+            {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Bloque separado para Fallecimiento -->
+      <h5 class="text-danger mt-4 mb-2">Registro de Fallecimiento</h5>
+      <div class="card border-danger bg-light p-3 mb-3">
+        <div class="mb-3">
+          <label class="form-label">{{ form.fallecido.label }}</label>
+          {{ form.fallecido }}
+          {% if form.fallecido.errors %}
+            <div class="text-danger small">{{ form.fallecido.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div id="tipo-fallecimiento-block" class="mb-3" style="display:none;">
+          <label class="form-label">{{ form.tipo_fallecimiento.label }}</label>
+          {{ form.tipo_fallecimiento }}
+          {% if form.tipo_fallecimiento.errors %}
+            <div class="text-danger small">{{ form.tipo_fallecimiento.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Bloque de botones dentro del form -->
+      <div class="d-flex justify-content-between mt-3">
+      <button type="submit" class="btn btn-success">Finalizar</button>
+
+      <!-- Botón que abre el modal -->
+      <a href="#" class="btn btn-outline-secondary" id="cancelBtn">
+        Cancelar edición
+      </a>
+    </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Script para mostrar u ocultar Tipo de Fallecimiento -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const fallecidoSelect = document.querySelector('select[name="fallecido"]');
+  const tipoFallecimientoField = document.getElementById('tipo-fallecimiento-block');
+
+  function toggleTipoFallecimiento() {
+    if (!fallecidoSelect || !tipoFallecimientoField) return;
+    const value = fallecidoSelect.value;
+    if (value === "True") {
+      tipoFallecimientoField.style.display = "block";
+    } else {
+      tipoFallecimientoField.style.display = "none";
+      const input = tipoFallecimientoField.querySelector("select, input");
+      if (input) input.value = "";
+    }
+  }
+
+  toggleTipoFallecimiento();
+  fallecidoSelect.addEventListener("change", toggleTipoFallecimiento);
+});
+</script>
+<!-- Modal de confirmación -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="cancelModalLabel">Cancelar edición del recién nacido</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas cancelar la edición del registro del recién nacido?<br>
+        <small class="text-muted">Los cambios que no se hayan guardado se perderán.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Seguir editando</button>
+        <!-- 🔹 Redirige siempre a la interfaz moderna -->
+        <a href="{% url 'neonatos:madre_list' %}" id="confirmCancel" class="btn btn-danger btn-sm">
+          Sí, cancelar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const cancelBtn = document.getElementById("cancelBtn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById("cancelModal"));
+      modal.show();
+    });
+  }
+});
+</script>
+
+{% endblock %}

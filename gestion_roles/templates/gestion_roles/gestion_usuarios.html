@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block body_class %}gestion-usuarios{% endblock %}
+{% block content %}
+
+<div class="user-container">
+    <h2>Gestión de Usuarios</h2>
+    <!-- Botón para crear nuevo usuario -->
+    <p>
+    <a href="{% url 'gestion_roles:crear_usuario' %}" class="btn btn-primary">Agregar Usuario</a>
+    </p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if usuarios %}
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.nombre }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.rol }}</td>
+            <td>
+            <a href="{% url 'gestion_roles:editar_usuario' u.id %}">Editar</a> |
+            <a href="{% url 'gestion_roles:eliminar_usuario' u.id %}" onclick="return confirm('¿Seguro que quieres eliminar este usuario?');">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No hay usuarios registrados.</td>
+        </tr>
+        {% endif %}
+    </tbody>
+    </table>
+    {% endblock %}
+</div>
