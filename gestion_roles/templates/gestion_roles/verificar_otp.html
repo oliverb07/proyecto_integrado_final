@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block body_class %}login{% endblock %}
+{% block title %}Verificar Codigo{% endblock %}
+{% block content %}
+<h2 class="text-black">Verificación de código</h2>
+
+<p class="text-black">Hemos enviado un código a tu correo. Ingrésalo para continuar.</p>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="otp" placeholder="Código de verificación" required>
+    <button type="submit" class="btn btn-primary">Verificar</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

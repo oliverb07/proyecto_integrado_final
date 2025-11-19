@@ -1,0 +1,304 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+<!--  BUSCADOR DE MADRES POR RUT (estilo nav) -->
+<div class="text-center mb-4">
+  <form class="d-inline-flex justify-content-center align-items-center gap-2" 
+        method="get" action="{% url 'neonatos:madre_list' %}">
+    <div class="input-group" style="max-width: 320px;">
+      <span class="input-group-text bg-primary text-white">
+        <i class="bi bi-search"></i>
+      </span>
+      <input type="text" 
+             name="q" 
+             value="{{ query }}" 
+             class="form-control"
+             placeholder="Buscar por RUT (Ej: 12.345.678-9)" 
+             required>
+      <button class="btn btn-primary" type="submit">Buscar</button>
+    </div>
+    <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary ms-2">
+      <i class="bi bi-arrow-clockwise"></i> Limpiar
+    </a>
+  </form>
+</div>
+
+
+  <h4 class="mb-0">Madres</h4>
+  <a class="btn btn-primary" href="{% url 'neonatos:madre_create' %}">Nueva Madre</a>
+</div>
+
+<div class="accordion" id="accordionMadres">
+  {% for m in madres %}
+  <div class="accordion-item mb-3 shadow-sm">
+    <h2 class="accordion-header" id="heading{{ m.id }}">
+      <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light">
+        <div>
+          👩 <strong>{{ m.nombres }} {{ m.apellidos }}</strong>  
+          <small class="text-muted">RUT: {{ m.rut }}</small>
+        </div>
+        <div>
+          <!--  BOTONES -->
+          <button class="btn btn-outline-info btn-sm" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#infoMadre{{ m.id }}"
+                  aria-expanded="false" aria-controls="infoMadre{{ m.id }}">
+            Detalles de la madre
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#infoPartos{{ m.id }}"
+                  aria-expanded="false" aria-controls="infoPartos{{ m.id }}">
+            Detalles del parto y recién nacido
+          </button>
+          <a href="{% url 'neonatos:parto_create' %}?madre_id={{ m.id }}" class="btn btn-sm btn-success">
+            Registrar nuevo parto
+          </a>
+          <a href="{% url 'neonatos:madre_delete' m.pk %}" class="btn btn-sm btn-danger">
+            Eliminar
+          </a>
+        </div>
+      </div>
+    </h2>
+
+    <!--  SECCIÓN DETALLES DE MADRE -->
+<div id="infoMadre{{ m.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ m.id }}" data-bs-parent="#accordionMadres">
+  <div class="accordion-body bg-white">
+    <h6 class="text-primary mb-3">Información de la Madre</h6>
+    
+    <table class="table table-sm table-borderless mb-3">
+      <tbody>
+        <tr><th>RUT:</th><td>{{ m.rut }}</td></tr>
+        <tr><th>Nombre completo:</th><td>{{ m.nombres }} {{ m.apellidos }}</td></tr>
+        <tr><th>Teléfono:</th><td>{{ m.telefono|default:"—" }}</td></tr>
+        <tr><th>Domicilio:</th><td>{{ m.direccion|default:"—" }}</td></tr>
+        <tr><th>Comuna:</th><td>{{ m.comuna|default:"—" }}</td></tr>
+        <tr><th>Edad:</th><td>{{ m.edad|default:"—" }}</td></tr>
+        <tr><th>Nacionalidad:</th><td>{{ m.nacionalidad|default:"—" }}</td></tr>
+        <tr><th>Pueblo originario:</th><td>{% if m.pueblo_originario %}Sí{% else %}No{% endif %}</td></tr>
+        <tr><th>Discapacidad SENADIS:</th><td>{% if m.discapacidad %}Sí{% else %}No{% endif %}</td></tr>
+        <tr><th>Privada de libertad:</th><td>{% if m.privada_libertad %}Sí{% else %}No{% endif %}</td></tr>
+        <tr><th>Controles prenatales:</th><td>{% if m.controles_prenatales %}Sí{% else %}No{% endif %}</td></tr>
+      </tbody>
+    </table>
+
+    <!--  Botones de edición -->
+    <div class="d-flex justify-content-end gap-2">
+      <a href="{% url 'neonatos:madre_update' m.pk %}" class="btn btn-outline-primary btn-sm">
+        Editar
+      </a>
+      <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary btn-sm">
+        Cancelar edición
+      </a>
+    </div>
+  </div>
+</div>
+
+
+    <!-- 🤰 SECCIÓN DETALLES DE PARTOS Y RN -->
+    <div id="infoPartos{{ m.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ m.id }}" data-bs-parent="#accordionMadres">
+      <div class="accordion-body bg-white">
+        {% if m.partos.all %}
+          {% for parto in m.partos.all|dictsortreversed:"id" %}
+
+          <div class="accordion mb-3" id="accordionPartos{{ parto.id }}">
+            <div class="accordion-item shadow-sm">
+              <h2 class="accordion-header position-relative d-flex align-items-center" id="headingParto{{ parto.id }}">
+                <!--  Botón X a la izquierda -->
+                <a href="{% url 'neonatos:parto_delete' parto.pk %}"
+                  class="btn btn-sm btn-outline-danger me-2 delete-parto"
+                  title="Eliminar parto">
+                  <i class="bi bi-x-lg"></i>
+                </a>
+
+                <!--  Botón de despliegue del parto -->
+                <button class="accordion-button collapsed bg-light flex-grow-1" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapseParto{{ parto.id }}"
+                        aria-expanded="false" aria-controls="collapseParto{{ parto.id }}">
+                  🤰 Parto {{ forloop.counter }} — {{ parto.fecha_parto|date:"d/m/Y" }} ({{ parto.tipo_parto|default:"Sin tipo" }})
+                </button>
+              </h2>
+
+
+              <div id="collapseParto{{ parto.id }}" class="accordion-collapse collapse" aria-labelledby="headingParto{{ parto.id }}" data-bs-parent="#accordionPartos{{ parto.id }}">
+                <div class="accordion-body">
+                  <!--  Detalles del parto -->
+                  <h6 class="text-primary">Detalles del Parto</h6>
+                  <p class="text-muted mb-2">
+                    <strong>Matrona responsable:</strong>
+                    {{ parto.registrado_por.nombre|default:"—" }}
+                  </p>
+
+                  <table class="table table-sm table-borderless mb-3">
+                    <tbody>
+                      <tr><th>Inicio:</th><td>{{ parto.inicio_parto|default:"—" }}</td></tr>
+                      <tr><th>Analgesia:</th><td>{{ parto.analgesia|default:"—" }}</td></tr>
+                      <tr><th>Acompañamiento:</th><td>{{ parto.acompanamiento|default:"—" }}</td></tr>
+                      <tr><th>Episiotomía:</th><td>{% if parto.episiotomia %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Oxitocina profiláctica:</th><td>{% if parto.oxitocina %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Plan de parto registrado:</th><td>{% if parto.plan_parto %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Contacto piel con piel:</th><td>{% if parto.contacto_piel_piel %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Alojamiento conjunto:</th><td>{% if parto.alojamiento_conjunto %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Cesárea programada:</th><td>{% if parto.cesarea_programada %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Complicaciones:</th><td>{% if parto.complicaciones %}Sí{% else %}No{% endif %}</td></tr>
+                      <tr><th>Edad gestacional:</th><td>{{ parto.edad_gestacional|default:"—" }} semanas</td></tr>
+                      <tr><th>Observaciones:</th><td>{{ parto.observaciones|default:"—" }}</td></tr>
+                    </tbody>
+                  </table>
+                  <!--  Botones para editar parto -->
+                  <div class="d-flex justify-content-end gap-2 mt-2">
+                    <a href="{% url 'neonatos:parto_update' parto.pk %}" class="btn btn-outline-primary btn-sm">
+                      Editar parto
+                    </a>
+                    <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary btn-sm">
+                      Cancelar edición
+                    </a>
+                  </div>
+
+                  <!-- 👶 RN asociado -->
+                  {% for rn in parto.recien_nacidos.all|dictsortreversed:"id" %}
+
+                  <div class="card border-success shadow-sm mb-3">
+                    <div class="card-header bg-success text-white">
+                      👶 Recién Nacido Asociado
+                    </div>
+                    <div class="card-body">
+                      <table class="table table-sm table-borderless mb-0">
+                        <tbody>
+                          <tr><th>Sexo:</th><td>{{ rn.sexo|default:"—" }}</td></tr>
+                          <tr><th>Peso (kg):</th><td>{{ rn.peso|default:"—" }}</td></tr>
+                          <tr><th>Talla (cm):</th><td>{{ rn.talla|default:"—" }}</td></tr>
+                          <tr><th>Apgar 1 min:</th><td>{{ rn.apgar_1|default:"—" }}</td></tr>
+                          <tr><th>Apgar 5 min:</th><td>{{ rn.apgar_5|default:"—" }}</td></tr>
+                          <tr><th>Reanimación:</th><td>{{ rn.reanimacion|default:"—" }}</td></tr>
+                          <tr><th>Fallecido:</th><td>{% if rn.fallecido %}Sí{% else %}No{% endif %}</td></tr>
+                          {% if rn.fallecido %}
+                          <tr><th>Tipo de fallecimiento:</th><td>{{ rn.tipo_fallecimiento|default:"—" }}</td></tr>
+                          {% endif %}
+                          <tr><th>Método de alimentación:</th><td>{{ rn.metodo_alimentacion|default:"—" }}</td></tr>
+                        </tbody>
+                      </table>
+
+                      <!--  Botones para editar RN -->
+                      <div class="d-flex justify-content-end gap-2 mt-2">
+                        <a href="{% url 'neonatos:rn_update' rn.pk %}" class="btn btn-outline-success btn-sm">
+                          Editar RN
+                        </a>
+                        <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary btn-sm">
+                          Cancelar edición
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  {% empty %}
+                  <p class="text-muted small">No hay recién nacidos registrados para este parto.</p>
+                  {% endfor %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted small">No se han registrado partos para esta madre.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">No hay madres registradas.</p>
+  {% endfor %}
+</div>
+
+
+<style>
+  /*  General */
+  .accordion-button {
+    font-size: 0.95rem !important;  /* tamaño más pequeño de botones */
+    padding: 0.4rem 0.75rem !important;
+  }
+
+  .accordion-body {
+    padding: 0.75rem 1rem !important;  /* reduce el espacio interior */
+  }
+
+  .card-header {
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.9rem;
+  }
+
+  .card-body {
+    padding: 0.6rem 0.75rem !important;
+  }
+
+  table.table th, 
+  table.table td {
+    font-size: 0.85rem;     /* texto más pequeño */
+    padding: 0.2rem 0.4rem; /* menos espacio entre filas */
+    vertical-align: middle;
+  }
+
+  /*  Títulos dentro de acordeones */
+  h6, h5 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.5rem;
+  }
+
+  /*  Botones principales */
+  .btn-sm {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /*  Reduce margen entre acordeones */
+  .accordion-item {
+    margin-bottom: 0.4rem !important;
+  }
+
+  /*  Hace más pequeño el texto general */
+  body.neonatos {
+    font-size: 0.9rem;
+  }
+
+  /*  Compacta encabezado de madre */
+  .accordion-header .d-flex {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .accordion-header strong {
+    font-size: 0.95rem;
+  }
+
+  .accordion-header small {
+    font-size: 0.8rem;
+  }
+
+    /* Más espacio debajo de los botones de edición */
+  .d-flex.justify-content-end.gap-2 {
+    margin-top: 1.5rem !important; 
+    margin-bottom: 1.5rem !important; /* deja espacio antes del siguiente bloque */
+  }
+
+
+  /*  Estilo del buscador al estilo del nav */
+  .input-group-text {
+    border-radius: 0.5rem 0 0 0.5rem !important;
+  }
+
+  .input-group .form-control {
+    border-radius: 0 0.5rem 0.5rem 0 !important;
+  }
+
+  .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+
+  .btn-outline-secondary i {
+    margin-right: 4px;
+  }
+</style>
+
+{% endblock %}
+
+

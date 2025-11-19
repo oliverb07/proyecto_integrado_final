@@ -1,0 +1,400 @@
+/* =========================================================
+   🎨 ESTILOS GENERALES
+   ========================================================= */
+
+/* Fondo, tipografía y base de toda la app */
+body {
+    background: 
+        linear-gradient(rgba(155, 155, 155, 0.667)),
+        url("/static/images/imagen_base.jpg") center/cover no-repeat fixed;
+    background-color: #f675ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fondos personalizados según la sección */
+body.generador-reportes {
+    background: linear-gradient(rgba(255, 255, 255, 0.452)),
+        url("/static/images/imagen_reporte.png") center/cover no-repeat fixed;
+}
+
+body.gestion-usuarios {
+    background: linear-gradient(rgba(255, 255, 255, 0.3)),
+        url("/static/images/imagen_gestion.jpg") center/cover no-repeat fixed;
+}
+
+body.neonatos {
+    background: linear-gradient(rgba(255, 255, 255, 0.5)),
+        url("/static/images/fondo_matrona.png") center/cover no-repeat fixed;
+}
+
+body.login {
+    background: linear-gradient(rgba(255, 255, 255, 0.5)),
+        url("/static/images/imagen_login.jpg") center/cover no-repeat fixed;
+}
+
+/* Estructura base para que el footer quede abajo */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* El contenido ocupa el espacio disponible */
+}
+
+label {
+    display: block;               /* Que aparezcan encima del input */
+    font-weight: 600;             /* Negrita moderada */
+    color: #000000;               /* Azul oscuro legible */
+    margin-bottom: 5px;           /* Espacio con el input */
+    text-align: left;             /* Alineado a la izquierda */
+    font-size: 15px;              /* Tamaño del texto */
+    letter-spacing: 0.5px;        /* Espaciado sutil */
+}
+
+
+/* =========================================================
+   🧭 ENCABEZADO
+   ========================================================= */
+
+header {
+    background-color: #e733f7;
+    color: #fff;
+    padding: 15px 0;
+}
+
+header h3 {
+    margin: 0;
+    font-weight: 600;
+}
+
+header nav a {
+    color: #fff;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   🦶 PIE DE PÁGINA
+   ========================================================= */
+
+footer {
+    background-color: #e733f7;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    bottom: 0;
+    width: 100%;
+    margin-top: auto;
+}
+
+/* =========================================================
+   🔐 LOGIN
+   ========================================================= */
+
+.login-container {
+    height: calc(100vh - 160px); /* Ajusta a pantalla menos header/footer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+.login-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    font-weight: 600;
+    color: #002b5b;
+}
+
+.login-subtitle {
+    color: #000000;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* =========================================================
+   👥 GESTIÓN DE USUARIOS
+   ========================================================= */
+
+/* Contenedor general de la vista */
+.user-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Título principal */
+.user-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #002b5b;
+}
+
+/* Tabla de usuarios */
+.user-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.user-container thead {
+    background-color: #002b5b;
+    color: #fff;
+}
+
+.user-container th, .user-container td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Texto de las celdas */
+.user-container td {
+    color: #002b5b;
+    font-weight: 500;
+}
+
+/* Efecto hover en filas */
+.user-container tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* =========================================================
+   🔘 BOTONES Y ENLACES
+   ========================================================= */
+
+.user-container a,
+.user-container button {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Enlaces estilo botón */
+.user-container a {
+    background-color: #17a2b8;
+    color: white;
+    margin-right: 5px;
+}
+
+.user-container a:hover {
+    background-color: #138496;
+}
+
+/* Botón verde (Guardar, Crear, etc.) */
+.user-container button {
+    background-color: #28a745;
+    color: white;
+}
+
+.user-container button:hover {
+    background-color: #218838;
+}
+
+/* =========================================================
+   🧾 FORMULARIOS EN GESTIÓN DE USUARIOS
+   ========================================================= */
+
+/* Tema general de color */
+body.gestion-usuarios {
+    color: #002b5b;
+}
+
+/* Título y tabla dentro de gestión */
+body.gestion-usuarios .user-container h2 {
+    color: #004080;
+    font-weight: 700;
+}
+
+body.gestion-usuarios .user-container table {
+    background-color: #f9fcff;
+    border: 1px solid #cfe2ff;
+}
+
+body.gestion-usuarios .user-container thead {
+    background-color: #004080;
+    color: white;
+}
+
+/* Labels de los formularios */
+body.gestion-usuarios form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #004080;
+}
+
+/* Inputs y selects */
+body.gestion-usuarios form input,
+body.gestion-usuarios form select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    width: 100%;
+    margin-bottom: 15px; /* espacio visual */
+}
+
+/* Botones del formulario */
+body.gestion-usuarios form button {
+    background-color: #004080;
+    color: white;
+}
+
+body.gestion-usuarios form button:hover {
+    background-color: #0066cc;
+}
+
+/* =========================================================
+   💬 MENSAJES DE DJANGO
+   ========================================================= */
+
+ul.messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+ul.messages li {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+ul.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+ul.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+ul.messages li.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* =========================================================
+   📘 BITÁCORA Y BOTONES DE ACCIÓN
+   ========================================================= */
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #002b5b;
+    color: white;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f4f9;
+}
+
+/* Contenedor de botones vertical */
+.contenedor-botones {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Estilo base de los botones personalizados */
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 25px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    width: fit-content;
+    font-size: 16px;
+}
+
+.boton i {
+    margin-right: 10px;
+}
+
+/* Colores de botones según tipo */
+.boton.verde   { background-color: #1c8b4c; }
+.boton.azul    { background-color: #007bff; }
+.boton.amarillo{ background-color: #f55a01; }
+.boton.celeste { background-color: #00bcd4; }
+
+/* Efecto hover */
+.boton:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Botón de cierre de sesión sin cambio de color */
+.btn-logout {
+    background-color: #dc3545 !important; /* rojo original */
+    color: white !important;
+    border: none !important;
+    transition: none !important;
+}
+
+/* Evita cambios en hover, focus o active */
+.btn-logout:hover,
+.btn-logout:focus,
+.btn-logout:active {
+    background-color: #dc3545 !important;
+    color: white !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+
+
+/* Fondo transparene */
+.hero-content {
+    background: rgba(255, 255, 255, 0.15); /* leve transparencia */
+    backdrop-filter: blur(8px);            /* efecto de desenfoque */
+    border-radius: 15px;
+    padding: 20px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    max-width: 800px; /*  Ajusta el ancho máximo */
+    margin: 0 auto;   /*  Centra horizontalmente */
+}
+
+
+/* =========================================================
+   📘 Neonatos
+   ========================================================= */
+

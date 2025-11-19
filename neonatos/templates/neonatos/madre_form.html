@@ -1,0 +1,132 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">{{ view.object|default_if_none:'Crear Madre' }}</h5>
+  </div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label">{{ field.label }}</label>
+          {% if field.name == "telefono" %}
+            <div class="input-group mb-3">
+              <span class="input-group-text">+569</span>
+              {{ form.telefono }}
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", function() {
+                const telInput = document.querySelector('input[name="telefono"]');
+                if (telInput) {
+                  telInput.placeholder = "12345678"; //solo los 8 dígitos
+                  telInput.classList.add("form-control");
+                  telInput.style.flex = "1"; // hace que ocupe el espacio correcto a la derecha
+                }
+              });
+            </script>
+          {% else %}
+            {{ field }}
+          {% endif %}
+
+          <!-- ícono ce advertencia -->
+          {% if field.errors %}
+            <div class="alert alert-danger py-1 px-2 mt-1 mb-0 d-flex align-items-center" style="border-radius: 8px; font-size: 0.9rem;">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>{{ field.errors|striptags }}</div>
+            </div>
+          {% endif %}
+
+          {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">
+        {% if object.pk %}
+          Guardar cambios
+        {% else %}
+          Guardar y continuar
+        {% endif %}
+      </button>
+
+      {% if object.pk %}
+        <a href="{% url 'neonatos:madre_detail' object.pk %}" class="btn btn-outline-secondary">Cancelar edición</a>
+      {% else %}
+        <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+      {% endif %}
+
+  </div>
+</div>
+<!-- Script para autoformato del rut -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const rutInput = document.querySelector('input[name="rut"]');
+  if (!rutInput) return;
+
+  rutInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/[^0-9kK]/g, '').toUpperCase();
+
+    // Separar cuerpo y dígito verificador si hay al menos 2 caracteres
+    if (value.length > 1) {
+      let cuerpo = value.slice(0, -1);
+      let dv = value.slice(-1);
+
+      // Limitar a 8 dígitos máximo antes del guion
+      cuerpo = cuerpo.slice(0, 8);
+
+      // Agregar puntos cada 3 cifras desde el final
+      cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+      e.target.value = `${cuerpo}-${dv}`;
+    } else {
+      e.target.value = value;
+    }
+  });
+});
+</script>
+<!-- Modal de confirmación -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="cancelModalLabel">Cancelar edición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas cancelar la edición?<br>
+        <small class="text-muted">Los cambios que no se hayan guardado se perderán.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Seguir editando</button>
+        <!-- 🔹 Redirige siempre a la nueva interfaz -->
+        <a href="{% url 'neonatos:madre_list' %}" id="confirmCancel" class="btn btn-danger btn-sm">
+          Sí, cancelar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const cancelBtn = document.querySelector(".btn-outline-secondary");
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById("cancelModal"));
+      modal.show();
+    });
+  }
+});
+</script>
+
+{% endblock %}

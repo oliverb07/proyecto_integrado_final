@@ -1,0 +1,204 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+
+<!-- === DATOS DE LA MADRE === -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-info text-white">
+    <h5 class="mb-0">Datos de la Madre</h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped align-middle mb-0">
+        <tbody>
+          <tr><th>RUT</th><td>{{ object.rut }}</td></tr>
+          <tr><th>Nombres</th><td>{{ object.nombres }}</td></tr>
+          <tr><th>Apellidos</th><td>{{ object.apellidos }}</td></tr>
+          <tr><th>Teléfono</th><td>{{ object.telefono|default:"—" }}</td></tr>
+          <tr><th>Domicilio</th><td>{{ object.direccion|default:"—" }}</td></tr>
+          <tr><th>Comuna</th><td>{{ object.comuna|default:"—" }}</td></tr>
+          <tr><th>Edad</th><td>{{ object.edad|default:"—" }}</td></tr>
+          <tr><th>Nacionalidad</th><td>{{ object.nacionalidad|default:"—" }}</td></tr>
+          <tr><th>Pertenece a pueblo originario</th><td>{% if object.pueblo_originario %}Sí{% else %}No{% endif %}</td></tr>
+          <tr><th>Discapacidad con credencial SENADIS</th><td>{% if object.discapacidad %}Sí{% else %}No{% endif %}</td></tr>
+          <tr><th>Privada de libertad</th><td>{% if object.privada_libertad %}Sí{% else %}No{% endif %}</td></tr>
+          <tr><th>Controles prenatales</th><td>{% if object.controles_prenatales %}Sí{% else %}No{% endif %}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 text-end">
+      <a class="btn btn-outline-primary btn-sm" href="{% url 'neonatos:madre_update' object.pk %}">Editar</a>
+      <a class="btn btn-outline-danger btn-sm" href="{% url 'neonatos:madre_delete' object.pk %}">Eliminar</a>
+    </div>
+  </div>
+</div>
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+
+<!-- === DATOS DE LA MADRE (ACORDEÓN CON BOTONES VISIBLES) === -->
+<h5 class="text-info mb-3">Datos de la Madre</h5>
+
+<div class="accordion mb-4" id="accordionMadre">
+  <div class="accordion-item shadow-sm border">
+
+    <!-- CABECERA -->
+    <div class="accordion-header d-flex justify-content-between align-items-center bg-info text-white px-3 py-2" id="headingMadre">
+      <!-- Botón desplegable -->
+      <button class="accordion-button collapsed bg-info text-white flex-grow-1 me-3 shadow-none border-0"
+              type="button" data-bs-toggle="collapse" data-bs-target="#collapseMadre"
+              aria-expanded="false" aria-controls="collapseMadre">
+        Información personal
+      </button>
+
+      <!-- Botones Editar / Eliminar (siempre visibles) -->
+      <div class="me-2 d-flex">
+        <a href="{% url 'neonatos:madre_update' object.pk %}" class="btn btn-light btn-sm me-2 shadow-sm">
+          ✏️ Editar
+        </a>
+        <a href="{% url 'neonatos:madre_delete' object.pk %}" class="btn btn-danger btn-sm shadow-sm">
+          🗑️ Eliminar
+        </a>
+      </div>
+    </div>
+
+    <!-- CONTENIDO PLEGABLE -->
+    <div id="collapseMadre" class="accordion-collapse collapse" aria-labelledby="headingMadre"
+         data-bs-parent="#accordionMadre">
+      <div class="accordion-body">
+        <div class="table-responsive">
+          <table class="table table-striped align-middle mb-0">
+            <tbody>
+              <tr><th>RUT</th><td>{{ object.rut }}</td></tr>
+              <tr><th>Nombre completo</th><td>{{ object.nombres }} {{ object.apellidos }}</td></tr>
+              <tr><th>Teléfono</th><td>{{ object.telefono|default:"—" }}</td></tr>
+              <tr><th>Domicilio</th><td>{{ object.direccion|default:"—" }}</td></tr>
+              <tr><th>Comuna</th><td>{{ object.comuna|default:"—" }}</td></tr>
+              <tr><th>Edad</th><td>{{ object.edad|default:"—" }}</td></tr>
+              <tr><th>Nacionalidad</th><td>{{ object.nacionalidad|default:"—" }}</td></tr>
+              <tr><th>Pueblo originario</th><td>{% if object.pueblo_originario %}Sí{% else %}No{% endif %}</td></tr>
+              <tr><th>Discapacidad SENADIS</th><td>{% if object.discapacidad %}Sí{% else %}No{% endif %}</td></tr>
+              <tr><th>Privada de libertad</th><td>{% if object.privada_libertad %}Sí{% else %}No{% endif %}</td></tr>
+              <tr><th>Controles prenatales</th><td>{% if object.controles_prenatales %}Sí{% else %}No{% endif %}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- === PARTOS Y RECIÉN NACIDOS ASOCIADOS === -->
+{% if partos %}
+  <h5 class="text-black mb-3">Partos y Recién Nacidos Asociados</h5>
+
+  <div class="accordion" id="accordionPartos">
+    {% for parto in partos %}
+      <div class="accordion-item mb-3 shadow-sm border">
+
+        <!-- CABECERA del acordeón con botones visibles -->
+        <div class="accordion-header d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2" id="heading{{ parto.id }}">
+          <!-- Botón desplegable -->
+          <button class="accordion-button collapsed bg-primary text-white flex-grow-1 me-3 shadow-none border-0"
+                  type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapse{{ parto.id }}"
+                  aria-expanded="false" aria-controls="collapse{{ parto.id }}">
+            Parto del {{ parto.fecha_parto|date:"d/m/Y" }} — {{ parto.tipo_parto|default:"Sin tipo" }}
+          </button>
+
+          <!-- Botones Editar / Eliminar -->
+          <div class="me-2 d-flex">
+            <a href="{% url 'neonatos:parto_update' parto.pk %}" class="btn btn-light btn-sm me-2 shadow-sm">
+              ✏️ Editar
+            </a>
+            <a href="{% url 'neonatos:parto_delete' parto.pk %}" class="btn btn-danger btn-sm shadow-sm">
+              🗑️ Eliminar
+            </a>
+          </div>
+        </div>
+
+        <!-- Contenido plegable -->
+        <div id="collapse{{ parto.id }}" class="accordion-collapse collapse"
+             aria-labelledby="heading{{ parto.id }}" data-bs-parent="#accordionPartos">
+          <div class="accordion-body">
+
+            <!-- Tabla de detalles del parto -->
+            <div class="table-responsive">
+              <table class="table table-striped align-middle mb-0">
+                <tbody>
+                  <tr><th>Tipo de parto</th><td>{{ parto.tipo_parto|default:"—" }}</td></tr>
+                  <tr><th>Inicio del parto</th><td>{{ parto.inicio_parto|default:"—" }}</td></tr>
+                  <tr><th>Analgesia</th><td>{{ parto.analgesia|default:"—" }}</td></tr>
+                  <tr><th>Acompañamiento</th><td>{{ parto.acompanamiento|default:"—" }}</td></tr>
+                  <tr><th>Episiotomía</th><td>{% if parto.episiotomia %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Oxitocina profiláctica</th><td>{% if parto.oxitocina %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Plan de parto registrado</th><td>{% if parto.plan_parto %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Contacto piel con piel</th><td>{% if parto.contacto_piel_piel %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Alojamiento conjunto</th><td>{% if parto.alojamiento_conjunto %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Cesárea programada</th><td>{% if parto.cesarea_programada %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Complicaciones</th><td>{% if parto.complicaciones %}Sí{% else %}No{% endif %}</td></tr>
+                  <tr><th>Edad gestacional</th><td>{{ parto.edad_gestacional|default:"—" }}</td></tr>
+                  <tr><th>Observaciones</th><td>{{ parto.observaciones|default:"—" }}</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- === Recién Nacido asociado === -->
+            {% for rn in parto.recien_nacidos.all %}
+              <div class="accordion mt-4" id="accordionRN{{ parto.id }}_{{ rn.id }}">
+                <div class="accordion-item border-success shadow-sm">
+                  <div class="accordion-header d-flex justify-content-between align-items-center bg-success text-white px-3 py-2" id="headingRN{{ rn.id }}">
+                    <!-- Botón desplegable -->
+                    <button class="accordion-button collapsed bg-success text-white flex-grow-1 me-3 shadow-none border-0"
+                            type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseRN{{ rn.id }}"
+                            aria-expanded="false" aria-controls="collapseRN{{ rn.id }}">
+                      Recién Nacido {% if forloop.counter > 1 %}#{{ forloop.counter }}{% endif %}
+                    </button>
+
+                    <!-- Botones visibles -->
+                    <div class="me-2 d-flex">
+                      <a href="{% url 'neonatos:rn_update' rn.pk %}" class="btn btn-light btn-sm me-2 shadow-sm">
+                        ✏️ Editar
+                      </a>
+                      <a href="{% url 'neonatos:rn_delete' rn.pk %}" class="btn btn-danger btn-sm shadow-sm">
+                        🗑️ Eliminar
+                      </a>
+                    </div>
+                  </div>
+
+                  <div id="collapseRN{{ rn.id }}" class="accordion-collapse collapse"
+                       aria-labelledby="headingRN{{ rn.id }}" data-bs-parent="#accordionRN{{ parto.id }}_{{ rn.id }}">
+                    <div class="accordion-body">
+                      <div class="table-responsive">
+                        <table class="table table-striped align-middle mb-0">
+                          <tbody>
+                            <tr><th>Sexo</th><td>{{ rn.sexo|default:"—" }}</td></tr>
+                            <tr><th>Peso (kg)</th><td>{{ rn.peso|default:"—" }}</td></tr>
+                            <tr><th>Talla (cm)</th><td>{{ rn.talla|default:"—" }}</td></tr>
+                            <tr><th>Apgar 1 min</th><td>{{ rn.apgar_1|default:"—" }}</td></tr>
+                            <tr><th>Apgar 5 min</th><td>{{ rn.apgar_5|default:"—" }}</td></tr>
+                            <tr><th>Fallecido</th><td>{% if rn.fallecido %}Sí{% else %}No{% endif %}</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-muted mt-2">No se ha registrado un recién nacido para este parto.</p>
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">No se han registrado partos para esta madre.</p>
+{% endif %}
+{% endblock %}

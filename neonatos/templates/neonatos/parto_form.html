@@ -1,0 +1,82 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-secondary text-white">
+    <h5 class="mb-0">Registrar Parto</h5>
+  </div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3" {% if field.name == 'madre' %}style="display:none"{% endif %}>
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small">{{ field.errors|striptags }}</div>
+          {% endif %}
+          {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <!-- 💡 Mostrar matrona logueada -->
+      {% if form.matrona_nombre %}
+        <div class="alert alert-info mt-3">
+          <i class="bi bi-person-check"></i>
+          Registrado automáticamente por: <strong>{{ form.matrona_nombre }}</strong>
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">Guardar y continuar</button>
+
+      {% if form.instance.madre and form.instance.madre.pk %}
+        <a href="{% url 'neonatos:madre_detail' form.instance.madre.pk %}" class="btn btn-outline-secondary">
+          Cancelar edición
+        </a>
+      {% else %}
+        <a href="{% url 'neonatos:madre_list' %}" class="btn btn-outline-secondary">
+          Cancelar
+        </a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="cancelModalLabel">Cancelar edición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas cancelar la edición?<br>
+        <small class="text-muted">Los cambios que no se hayan guardado se perderán.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Seguir editando</button>
+        <!-- Redirige siempre a la nueva interfaz -->
+        <a href="{% url 'neonatos:madre_list' %}" id="confirmCancel" class="btn btn-danger btn-sm">
+          Sí, cancelar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const cancelBtn = document.querySelector(".btn-outline-secondary");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById("cancelModal"));
+      modal.show();
+    });
+  }
+});
+</script>
+{% endblock %}

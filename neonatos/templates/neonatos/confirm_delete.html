@@ -1,0 +1,17 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-danger text-white">
+    <h5 class="mb-0">Confirmar eliminación</h5>
+  </div>
+  <div class="card-body">
+    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Eliminar</button>
+      <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

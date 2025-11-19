@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block body_class %}login{% endblock %}
+{% block title %}Iniciar Sesión{% endblock %}
+{% block content %}
+
+<div class="login-container d-flex justify-content-center align-items-center">
+    <div class="login-card">
+        <p class="login-subtitle text-center">Acceso al sistema</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if etapa_otp %}
+
+                <!-- Etapa 2: codigo otp-->
+                <div class="mb-3">
+                    <label for="codigo_otp" class="form-label">Codigo OTP:</label>
+                    <input type="text" name="codigo_otp" id="codigo_otp"
+                        class="form-control" maxlength="6" required placeholder="Ej: 483920">
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 mt-2">Verificar codigo</button>
+        
+            {% else %}
+                
+                <!-- Primera etapa: Login Normal-->
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-2">Ingresar</button>
+            {% endif %}
+        </form>
+        
+        {% if messages %}
+            <div class="alert alert-danger mt-3">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

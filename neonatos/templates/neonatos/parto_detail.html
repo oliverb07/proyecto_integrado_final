@@ -1,0 +1,26 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">Detalle del Parto</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group mb-3">
+      <li class="list-group-item"><strong>Madre:</strong> {{ object.madre.nombres }} {{ object.madre.apellidos }}</li>
+      <li class="list-group-item"><strong>Fecha de parto:</strong> {{ object.fecha_parto|date:"d/m/Y" }}</li>
+      <li class="list-group-item"><strong>Tipo de parto:</strong> {{ object.tipo_parto }}</li>
+      <li class="list-group-item"><strong>Inicio del parto:</strong> {{ object.inicio_parto }}</li>
+      <li class="list-group-item"><strong>Cesárea programada:</strong> {% if object.cesarea_programada %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Episiotomía:</strong> {% if object.episiotomia %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Oxitocina:</strong> {% if object.oxitocina %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Plan de parto:</strong> {% if object.plan_parto %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Contacto piel con piel:</strong> {% if object.contacto_piel_piel %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Complicaciones:</strong> {% if object.complicaciones %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Edad gestacional:</strong> {{ object.edad_gestacional }} semanas</li>
+      <li class="list-group-item"><strong>Observaciones:</strong> {{ object.observaciones|default:"—" }}</li>
+    </ul>
+    <a href="{% url 'neonatos:madre_detail' object.madre.pk %}" class="btn btn-outline-secondary">← Volver a la madre</a>
+  </div>
+</div>
+{% endblock %}

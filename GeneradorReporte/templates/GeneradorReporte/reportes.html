@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block body_class %}generador-reportes{% endblock %}
+{% block content %}
+<main class="container text-black text-center mt-5">
+    <h3>Generador de Reportes REM BS22</h3>
+    <p>Seleccione un rango de fechas para exportar los partos registrados.</p>
+
+    <form action="{% url 'GeneradorReporte:export_reporte_bs22' %}" method="get" class="mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <label for="inicio" class="form-label">Fecha Inicio:</label>
+                <input type="date" name="inicio" id="inicio" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label for="fin" class="form-label">Fecha Fin:</label>
+                <input type="date" name="fin" id="fin" class="form-control" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">Descargar Excel</button>
+    </form>
+
+    <div class="mt-4">
+        <a href="{% url 'GeneradorReporte:inicio' %}" class="btn btn-outline-primary">
+            ⬅️ Volver al menú principal
+        </a>
+    </div>
+</main>
+{% endblock %}
+
+

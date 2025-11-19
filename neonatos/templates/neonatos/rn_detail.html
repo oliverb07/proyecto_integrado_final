@@ -1,0 +1,23 @@
+{% extends 'neonatos/basen.html' %}
+{% block body_class1 %}neonatos{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-success text-white">
+    <h5 class="mb-0">Detalle del Recién Nacido</h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group mb-3">
+      <li class="list-group-item"><strong>Parto asociado:</strong> {{ object.parto.fecha_parto|date:"d/m/Y" }} — {{ object.parto.tipo_parto }}</li>
+      <li class="list-group-item"><strong>Sexo:</strong> {{ object.sexo }}</li>
+      <li class="list-group-item"><strong>Peso:</strong> {{ object.peso }} kg</li>
+      <li class="list-group-item"><strong>Talla:</strong> {{ object.talla }} cm</li>
+      <li class="list-group-item"><strong>Apgar (1 min):</strong> {{ object.apgar_1 }}</li>
+      <li class="list-group-item"><strong>Apgar (5 min):</strong> {{ object.apgar_5 }}</li>
+      <li class="list-group-item"><strong>Fallecido:</strong> {% if object.fallecido %}Sí{% else %}No{% endif %}</li>
+      <li class="list-group-item"><strong>Tipo de fallecimiento:</strong> {{ object.tipo_fallecimiento|default:"—" }}</li>
+      <li class="list-group-item"><strong>Método de alimentación:</strong> {{ object.metodo_alimentacion|default:"—" }}</li>
+    </ul>
+    <a href="{% url 'neonatos:madre_detail' object.parto.madre.pk %}" class="btn btn-outline-secondary">← Volver a la madre</a>
+  </div>
+</div>
+{% endblock %}

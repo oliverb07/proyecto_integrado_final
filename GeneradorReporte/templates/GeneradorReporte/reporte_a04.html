@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block body_class %}generador-reportes{% endblock %}
+{% block content %}
+<div class="container text-black text-center mt-5">
+    <h3 class="mb-4">⚰️ Reporte REM A04 — Defunciones</h3>
+    <p class="lead">Desde esta sección puedes generar el reporte de defunciones (REM A04).</p>
+
+    <form action="{% url 'GeneradorReporte:exportar_rem_a04' %}" method="get" class="mt-4 d-flex justify-content-center gap-3">
+        <div>
+            <label for="inicio" class="form-label">Fecha inicio:</label>
+            <input type="date" id="inicio" name="inicio" class="form-control" required>
+        </div>
+        <div>
+            <label for="fin" class="form-label">Fecha fin:</label>
+            <input type="date" id="fin" name="fin" class="form-control" required>
+        </div>
+        <div class="align-self-end">
+            <button type="submit" class="btn btn-success">
+                📊 Generar Reporte Excel
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-4">
+        <a href="{% url 'GeneradorReporte:inicio' %}" class="btn btn-outline-primary">
+            ⬅️ Volver al menú principal
+        </a>
+    </div>
+</div>
+{% endblock %}
