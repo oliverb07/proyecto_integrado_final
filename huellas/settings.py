@@ -11,25 +11,36 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config
+import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ================================
+# 🔐 SECURITY - SECRET KEY
+# ================================
+SECRET_KEY = config("SECRET_KEY", default="insecure-key-dev")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# ================================
+# 🐞 DEBUG
+# ================================
+DEBUG = config("DEBUG", default=True, cast=bool)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w7anzb+bh$jr=6^@#hp8*k@*uovl9jp@!c1n=)s%01j&cuz3j='
+# ================================
+# 🌍 ALLOWED HOSTS
+# ================================
+RENDER_EXTERNAL_HOSTNAME = config("RENDER_EXTERNAL_HOSTNAME", default=None)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, "localhost", "127.0.0.1"]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-ALLOWED_HOSTS = []
 
-
-# Application definition
-
+# ================================
+# 🔧 APPS
+# ================================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,9 +55,15 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'gestion_roles.Usuario'
 
-
+# ================================
+# 🔧 MIDDLEWARE
+# ================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # Requerido por Render para servir estáticos comprimidos
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,7 +74,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'huellas.urls'
 
-import os
+# ================================
+# 🎨 TEMPLATES
+# ================================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -77,83 +96,85 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'huellas.wsgi.application'
 
+# ================================
+# 🗄️ DATABASES
+# ================================
+# LOCAL → MySQL
+# PRODUCCIÓN → PostgreSQL automática con Render
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-from decouple import config
-import pymysql
-pymysql.install_as_MySQLdb()
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+if config("ENV", default="development") == "production":
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL"),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# ================================
+# 🔐 PASSWORD VALIDATION
+# ================================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# ================================
+# 🌎 INTERNATIONALIZATION
+# ================================
 LANGUAGE_CODE = 'es-es'
-
 TIME_ZONE = 'America/Santiago'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
+# ================================
+# 📁 STATIC FILES
+# ================================
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Render requiere que whitenoise gestione los archivos
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ================================
+# 🔑 LOGIN / LOGOUT
+# ================================
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# ================================
+# 📧 EMAIL (Render necesita SMTP real, local sirve consola)
+# ================================
+EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 
-# Tiempo máximo de sesión inactiva (en segundos)
-SESSION_COOKIE_AGE = 600  # 10 minutos
-
-# Cierra la sesión cuando el navegador se cierra
+# ================================
+# ⏱️ SESSIONES
+# ================================
+SESSION_COOKIE_AGE = 600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-# Refrescar la expiración con cada request (si quieres mantener la sesión mientras el usuario navega)
 SESSION_SAVE_EVERY_REQUEST = True
-

@@ -34,7 +34,7 @@ def login_view(request):
 
         if user is not None:
             otp = random.randint(100000, 999999)
-
+        
             #Guardar datos temporales
             request.session['pending_user_id'] = user.id
             request.session['otp_code'] = otp

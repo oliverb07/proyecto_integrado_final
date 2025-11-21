@@ -255,8 +255,8 @@ class MadreForm(BaseBootstrapForm):
     
     def clean_paridad(self):
         paridad = self.cleaned_data.get("paridad")
-        if paridad is None or paridad < 0:
-            raise ValidationError("La paridad no puede ser negativa.")
+        if paridad not in ["nulipara", "multipara"]:
+            raise forms.ValidationError("Paridad inválida.")
         return paridad
 
     def clean_cesareas_previas(self):
@@ -858,7 +858,7 @@ class RecienNacidoForm(BaseBootstrapForm):
         try:
             peso = float(peso)
         except ValueError:
-            raise forms.ValidationError("El peso debe ser un número válido (use punto decimal).")
+           raise forms.ValidationError("El peso debe ser un número válido (use punto decimal).")
 
         # Validación de rango clínico (prematuros y macrosómicos)
         if peso < 0.5 or peso > 6.0:
@@ -868,12 +868,11 @@ class RecienNacidoForm(BaseBootstrapForm):
 
     def _to_bool(self, valor):
         if valor in [True, "True", "true"]:
-            return True
+           return True
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe seleccionar una opción válida.")
 
-    def clean_animalias_congenitas(self):
         return self._to_bool(self.cleaned_data.get("animalias_congenitas"))
 
     def clean_profilaxis_hepatitisb(self):
@@ -901,10 +900,6 @@ class RecienNacidoForm(BaseBootstrapForm):
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe indicar si el recién nacido falleció.")
-
-    
-    
-
     
     def clean_talla(self):
         talla = self.cleaned_data.get("talla", "")
