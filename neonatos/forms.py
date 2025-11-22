@@ -255,13 +255,8 @@ class MadreForm(BaseBootstrapForm):
     
     def clean_paridad(self):
         paridad = self.cleaned_data.get("paridad")
-<<<<<<< HEAD
         if paridad not in ["nulipara", "multipara"]:
             raise forms.ValidationError("Paridad inválida.")
-=======
-        if paridad is None or paridad < 0:
-            raise ValidationError("La paridad no puede ser negativa.")
->>>>>>> e96268e4ed216f10445b6789db647d27d508a407
         return paridad
 
     def clean_cesareas_previas(self):
@@ -863,11 +858,8 @@ class RecienNacidoForm(BaseBootstrapForm):
         try:
             peso = float(peso)
         except ValueError:
-<<<<<<< HEAD
            raise forms.ValidationError("El peso debe ser un número válido (use punto decimal).")
-=======
-            raise forms.ValidationError("El peso debe ser un número válido (use punto decimal).")
->>>>>>> e96268e4ed216f10445b6789db647d27d508a407
+
 
         # Validación de rango clínico (prematuros y macrosómicos)
         if peso < 0.5 or peso > 6.0:
@@ -877,19 +869,15 @@ class RecienNacidoForm(BaseBootstrapForm):
 
     def _to_bool(self, valor):
         if valor in [True, "True", "true"]:
-<<<<<<< HEAD
+
            return True
-=======
-            return True
->>>>>>> e96268e4ed216f10445b6789db647d27d508a407
+
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe seleccionar una opción válida.")
 
-<<<<<<< HEAD
-=======
+
     def clean_animalias_congenitas(self):
->>>>>>> e96268e4ed216f10445b6789db647d27d508a407
         return self._to_bool(self.cleaned_data.get("animalias_congenitas"))
 
     def clean_profilaxis_hepatitisb(self):
@@ -917,13 +905,7 @@ class RecienNacidoForm(BaseBootstrapForm):
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe indicar si el recién nacido falleció.")
-<<<<<<< HEAD
-=======
 
-    
-    
-
->>>>>>> e96268e4ed216f10445b6789db647d27d508a407
     
     def clean_talla(self):
         talla = self.cleaned_data.get("talla", "")
