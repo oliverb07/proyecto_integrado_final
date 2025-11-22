@@ -121,16 +121,14 @@ def ver_bitacora(request):
     return render(request, 'GeneradorReporte/bitacora.html', {'logs': logs})
 
 
-@login_required
-@administrador_required
+
 def gestion_usuarios(request):
     # Vista principal de gestión de usuarios.
     usuarios = Usuario.objects.all()
     return render(request, 'gestion_roles/gestion_usuarios.html', {'usuarios': usuarios})
 
 
-@login_required
-@administrador_required
+
 def crear_usuario(request):
     # Crear un nuevo usuario.
     if request.method == 'POST':
