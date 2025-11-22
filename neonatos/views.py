@@ -5,7 +5,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from gestion_roles.utils import registrar_accion
-
+from django.contrib.auth.decorators import login_required
+from gestion_roles.decorators import matrona_required
 
 from .models import Madre, Parto, RecienNacido
 from .forms import MadreForm, PartoForm, RecienNacidoForm
@@ -15,6 +16,8 @@ from .utils import format_rut_with_dots
 class HomeView(TemplateView):
     template_name = "neonatos/home.html"
 
+@login_required
+@matrona_required
 class MadreListView(ListView):
     model = Madre
     template_name = "neonatos/madre_list.html"
@@ -52,7 +55,8 @@ class MadreListView(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx["query"] = self.request.GET.get("q", "")
         return ctx
-
+@login_required
+@matrona_required
 class MadreDetailView(DetailView):
     model = Madre
     template_name = "neonatos/madre_detail.html"
@@ -71,7 +75,8 @@ class MadreDetailView(DetailView):
 
         return context
 
-
+@login_required
+@matrona_required
 class MadreCreateView(CreateView):
     model = Madre
     form_class = MadreForm
@@ -87,7 +92,9 @@ class MadreCreateView(CreateView):
     def get_success_url(self):
         # no se usa por el redirect inmediato
         return reverse_lazy("neonatos:madre_detail", args=[self.object.pk])
-
+    
+@login_required
+@matrona_required
 class MadreUpdateView(UpdateView):
     model = Madre
     form_class = MadreForm
@@ -101,7 +108,8 @@ class MadreUpdateView(UpdateView):
     def get_success_url(self):
         # Volver a la lista moderna en lugar del detalle antiguo
         return reverse_lazy("neonatos:madre_list")
-
+@login_required
+@matrona_required
 class MadreDeleteView(DeleteView):
     model = Madre
     template_name = "neonatos/madre_confirm_delete.html"
@@ -111,7 +119,8 @@ class MadreDeleteView(DeleteView):
         madre = self.get_object()
         registrar_accion(request, "Eliminación de madre", f"Se eliminó madre {madre.rut}")
         return super().delete(request, *args, **kwargs)
-    
+@login_required
+@matrona_required 
 class PartoCreateView(CreateView):
     model = Parto
     form_class = PartoForm
@@ -150,7 +159,8 @@ class PartoCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy("neonatos:madre_detail", args=[self.object.madre.pk])
     
-    
+@login_required
+@matrona_required    
 # === PARTO: editar y eliminar ===
 class PartoUpdateView(UpdateView):
     model = Parto
@@ -166,7 +176,8 @@ class PartoUpdateView(UpdateView):
         # Volver a la lista moderna
         return reverse_lazy("neonatos:madre_list")
 
-
+@login_required
+@matrona_required
 class PartoDeleteView(DeleteView):
     model = Parto
     template_name = "neonatos/confirm_delete.html"
@@ -185,11 +196,13 @@ class PartoDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.delete()
         return redirect(reverse_lazy("neonatos:madre_list"))
-    
+@login_required
+@matrona_required    
 class PartoDetailView(DetailView):
     model = Parto
     template_name = "neonatos/parto_detail.html"
-
+@login_required
+@matrona_required
 class BuscarPorRUTView(TemplateView):
     template_name = "neonatos/buscar.html"
 
@@ -226,7 +239,8 @@ class BuscarPorRUTView(TemplateView):
         return ctx
 
 
-
+@login_required
+@matrona_required
 # === RECIÉN NACIDO: editar y eliminar ===
 class RNUpdateView(UpdateView):
     model = RecienNacido
@@ -246,7 +260,8 @@ class RNUpdateView(UpdateView):
     def get_success_url(self):
         # Volver a la lista moderna
         return reverse_lazy("neonatos:madre_list")
-
+@login_required
+@matrona_required
 class RNDeleteView(DeleteView):
     model = RecienNacido
     template_name = "neonatos/confirm_delete.html"
@@ -264,11 +279,14 @@ class RNDeleteView(DeleteView):
         # Volver al detalle de la madre tras eliminar
         return reverse_lazy("neonatos:madre_detail", args=[self.object.parto.madre.pk])
 
-
+@login_required
+@matrona_required
 class RecienNacidoDetailView(DetailView):
     model = RecienNacido
     template_name = "neonatos/rn_detail.html"
-    
+
+@login_required
+@matrona_required    
 class RNCreateView(CreateView):
     model = RecienNacido
     form_class = RecienNacidoForm
@@ -299,6 +317,8 @@ class RNCreateView(CreateView):
     def get_success_url(self):
         return reverse("neonatos:madre_list")
     
+@login_required
+@matrona_required    
 # Pagina de confirmacion de eliminacion
 class PartoDeleteView(DeleteView):
     model = Parto
