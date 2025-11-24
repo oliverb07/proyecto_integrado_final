@@ -117,4 +117,44 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<!-- Script para colorear dinámicamente Apgar -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+console.log("Apgar script cargado correctamente");
+
+
+  const apgarSelects = document.querySelectorAll(".apgar-select");
+
+  apgarSelects.forEach(select => {
+
+    function updateColor() {
+      const v = parseInt(select.value);
+
+      select.style.backgroundColor = "";
+      select.style.color = "#000";
+
+      if (isNaN(v)) return;
+
+      if (v <= 3) {
+        select.style.backgroundColor = "#f8d7da";
+        select.style.color = "#842029";
+      }
+      else if (v <= 6) {
+        select.style.backgroundColor = "#fff3cd";
+        select.style.color = "#664d03";
+      }
+      else {
+        select.style.backgroundColor = "#d1e7dd";
+        select.style.color = "#0f5132";
+      }
+    }
+
+    updateColor();
+    select.addEventListener("change", updateColor);
+  });
+});
+</script>
+
 {% endblock %}

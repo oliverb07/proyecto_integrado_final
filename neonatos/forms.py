@@ -311,7 +311,7 @@ class PartoForm(BaseBootstrapForm):
         self.matrona_nombre = None
         if self.request and self.request.user.is_authenticated:
             user = self.request.user
-            nombre = getattr(user, "nombre", None)  # ✅ usa el campo real del modelo Usuario
+            nombre = getattr(user, "nombre", None)  #  usa el campo real del modelo Usuario
             rol = getattr(user, "rol", None)        # opcional: muestra también el rol
             if nombre:
                 # Muestra "Paola Araya (Matrona)"
@@ -320,7 +320,38 @@ class PartoForm(BaseBootstrapForm):
                 # Si por alguna razón no hay nombre, usa el correo
                 self.matrona_nombre = getattr(user, "email", "Usuario desconocido")
 
-            
+
+        # ====================================================
+        #   TOOLTIPS AUTOMÁTICOS (AL FINAL DEL __init__)
+        # ====================================================
+        tooltips = {
+            "fecha_parto": "Fecha registrada en ficha clínica en la que ocurrió el evento del nacimiento.",
+            "hora_parto": "Hora exacta del nacimiento según documentación clínica o reloj institucional.",
+            "tipo_parto": "Clasificación obstétrica del parto según vía: vaginal eutócico, instrumental o cesárea (electiva o de urgencia).",
+            "tipo_atencion": "Tipo de atención según categorización clínica: procedimiento programado o resolución por urgencia obstétrica.",
+            "inicio_parto": "Mecanismo de inicio del trabajo de parto: espontáneo o inducido mediante intervención médica.",
+            "analgesia": "Método analgésico administrado durante el trabajo de parto: neuroaxial, endovenosa, óxido nitroso, general u otras técnicas.",
+            "acompanamiento": "Presencia de acompañante significativo durante fases del trabajo de parto o expulsivo.",
+            "presentacion_fetal": "Posición del polo fetal respecto al canal del parto: cefálica, pélvica/podálica o transversa.",
+            "embarazo_multiple": "Indica si el nacimiento corresponde a una gestación múltiple.",
+            "edad_gestacional": "Edad gestacional en semanas completas calculada al momento del parto, según ecografía válida o FUR confiable.",
+            "episiotomia": "Registro del procedimiento de episiotomía durante el expulsivo.",
+            "oxitocina": "Indica administración de oxitocina profiláctica en manejo activo del alumbramiento.",
+            "plan_parto": "Confirma existencia de un plan de parto informado y registrado.",
+            "contacto_piel_piel": "Registro del contacto piel a piel inmediato entre madre y RN como parte del apego precoz.",
+            "alojamiento_conjunto": "Indica si se aplicó alojamiento conjunto madre–hijo posterior al nacimiento.",
+            "cesarea_programada": "Señala si la cesárea fue planificada previamente.",
+            "complicaciones": "Registro de complicaciones obstétricas maternas o fetales ocurridas durante el parto.",
+            "observaciones": "Notas clínicas relevantes no cubiertas en otros campos.",
+        }
+
+
+        for campo, texto in tooltips.items():
+            if campo in self.fields:
+                self.fields[campo].help_text = texto
+                self.fields[campo].widget.attrs["title"] = texto
+        
+        
     OPCIONES_SI_NO = [
     ("", "Seleccione una opción..."),
     ("Si", "Sí"),
@@ -610,6 +641,42 @@ class RecienNacidoForm(BaseBootstrapForm):
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.Select):
                 field.widget.attrs["class"] = "form-select"
+                
+
+        tooltips = {
+            "sexo": "Sexo biológico del recién nacido determinado mediante examen físico inmediatamente posterior al nacimiento.",
+            "peso": "Peso al nacer medido en balanza neonatal certificada, expresado en kilogramos con precisión de 1 a 3 decimales.",
+            "talla": "Longitud cráneo–talón del recién nacido, medida en centímetros mediante infantómetro.",
+            "apgar_1": "Puntaje Apgar asignado al primer minuto de vida para evaluar adaptación cardiorrespiratoria inicial.",
+            "apgar_5": "Puntaje Apgar asignado a los 5 minutos de vida para valoración de respuesta a intervención o evolución espontánea.",
+            "anomalias_congenitas": "Registro de malformaciones congénitas detectadas al examen físico inicial, sean mayores o menores.",
+            "profilaxis_hepatitisb": "Administración de vacuna Hepatitis B dentro de las primeras horas de vida según calendario vigente.",
+            "profilaxis_ocular": "Aplicación de profilaxis ocular neonatal para prevención de oftalmía gonocócica.",
+            "reanimacion": "Nivel de reanimación neonatal aplicada: ninguna, básica (ventilación con bolsa y máscara) o avanzada (intubación, fármacos).",
+            "asfixia_neonatal": "Indica si el recién nacido presentó criterios clínicos o laboratoriales de asfixia perinatal.",
+            "tamizaje_metabolico": "Registro de toma de muestra para tamizaje neonatal metabólico (prueba del talón).",
+            "tamizaje_auditivo": "Resultado del tamizaje auditivo neonatal mediante OEA/PEATC, según protocolo institucional.",
+            "tamizaje_cardiaco": "Tamizaje de cardiopatías congénitas críticas mediante oximetría pre y postductal.",
+            "fallecido": "Indica si el recién nacido falleció antes del alta hospitalaria.",
+            "tipo_fallecimiento": "Clasificación del fallecimiento perinatal: aborto, mortinato o mortineonato, según criterio jurídico-sanitario.",
+            "metodo_alimentacion": "Método de alimentación indicado al alta: lactancia materna exclusiva, mixta, fórmula o indicación específica (HTLV/VIH, Ley 21.155).",
+        }
+
+        for campo, texto in tooltips.items():
+            if campo in self.fields:
+                self.fields[campo].help_text = texto
+                self.fields[campo].widget.attrs["title"] = texto
+                
+                
+        #cambiado
+        # Forzar clase apgar-select después del Bootstrap
+        if "apgar_1" in self.fields:
+            self.fields["apgar_1"].widget.attrs["class"] += " apgar-select"
+
+        if "apgar_5" in self.fields:
+            self.fields["apgar_5"].widget.attrs["class"] += " apgar-select"
+
+
 
     
     OPCIONES_SI_NO = [
@@ -648,15 +715,9 @@ class RecienNacidoForm(BaseBootstrapForm):
     ("F", "Femenino"),
     ]
     
-    APGAR_CHOICES = [
-    ("", "Seleccione una opción..."),
-    ("1", "1"),
-    ("2", "2"),
-    ("3", "3"),
-    ("4", "4"),
-    ("5", "5"),
-    ]
-
+    
+    # cambiado
+    APGAR_CHOICES = [("", "Seleccione una opción...")] + [(str(i), str(i)) for i in range(0, 11)]
 
     sexo = forms.ChoiceField(
         label="Sexo",
@@ -668,25 +729,21 @@ class RecienNacidoForm(BaseBootstrapForm):
         },
     )
 
+    #cambiado
     apgar_1 = forms.ChoiceField(
         label="Puntuación Apgar (1 min)",
         choices=APGAR_CHOICES,
         required=True,
-        widget=forms.Select(attrs={"class": "form-select"}),
-        error_messages={
-            "required": "Debe seleccionar la puntuación Apgar al 1 minuto."
-        },
+        widget=forms.Select(attrs={"class": "form-select apgar-select"}),
     )
 
     apgar_5 = forms.ChoiceField(
         label="Puntuación Apgar (5 min)",
         choices=APGAR_CHOICES,
         required=True,
-        widget=forms.Select(attrs={"class": "form-select"}),
-        error_messages={
-            "required": "Debe seleccionar la puntuación Apgar a los 5 minutos."
-        },
+        widget=forms.Select(attrs={"class": "form-select apgar-select"}),
     )
+
     
     anomalias_congenitas = forms.TypedChoiceField(
         label="Anomalías congénitas",
@@ -860,7 +917,6 @@ class RecienNacidoForm(BaseBootstrapForm):
         except ValueError:
            raise forms.ValidationError("El peso debe ser un número válido (use punto decimal).")
 
-
         # Validación de rango clínico (prematuros y macrosómicos)
         if peso < 0.5 or peso > 6.0:
             raise forms.ValidationError("El peso debe estar entre 0.5 kg y 6.0 kg.")
@@ -869,15 +925,11 @@ class RecienNacidoForm(BaseBootstrapForm):
 
     def _to_bool(self, valor):
         if valor in [True, "True", "true"]:
-
            return True
-
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe seleccionar una opción válida.")
 
-
-    def clean_animalias_congenitas(self):
         return self._to_bool(self.cleaned_data.get("animalias_congenitas"))
 
     def clean_profilaxis_hepatitisb(self):
@@ -905,7 +957,6 @@ class RecienNacidoForm(BaseBootstrapForm):
         elif valor in [False, "False", "false"]:
             return False
         raise forms.ValidationError("Debe indicar si el recién nacido falleció.")
-
     
     def clean_talla(self):
         talla = self.cleaned_data.get("talla", "")
@@ -935,29 +986,37 @@ class RecienNacidoForm(BaseBootstrapForm):
         return talla_float
 
     def clean_apgar_1(self):
-        valor = self.cleaned_data.get("apgar_1", "")
-        if not valor:
+        valor = self.cleaned_data.get("apgar_1")
+        if valor in [None, ""]:
             raise forms.ValidationError("Debe seleccionar la puntuación Apgar al 1 minuto.")
+
         try:
-            valor_int = int(valor)
+            valor = int(valor)
         except ValueError:
-            raise forms.ValidationError("La puntuación Apgar 1 debe ser un número entero.")
-        if valor_int < 1 or valor_int > 5:
-            raise forms.ValidationError("La puntuación Apgar 1 debe estar entre 1 y 5.")
-        return valor_int
+            raise forms.ValidationError("El Apgar debe ser un número entero.")
+
+        if not (0 <= valor <= 10):
+            raise forms.ValidationError("El Apgar debe estar entre 0 y 10.")
+
+        return valor
+
 
 
     def clean_apgar_5(self):
-        valor = self.cleaned_data.get("apgar_5", "")
-        if not valor:
+        valor = self.cleaned_data.get("apgar_5")
+        if valor in [None, ""]:
             raise forms.ValidationError("Debe seleccionar la puntuación Apgar a los 5 minutos.")
+
         try:
-            valor_int = int(valor)
+            valor = int(valor)
         except ValueError:
-            raise forms.ValidationError("La puntuación Apgar 5 debe ser un número entero.")
-        if valor_int < 1 or valor_int > 5:
-            raise forms.ValidationError("La puntuación Apgar 5 debe estar entre 1 y 5.")
-        return valor_int
+            raise forms.ValidationError("El Apgar debe ser un número entero.")
+
+        if not (0 <= valor <= 10):
+            raise forms.ValidationError("El Apgar debe estar entre 0 y 10.")
+
+        return valor
+
 
 
     def clean(self):
