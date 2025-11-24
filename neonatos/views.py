@@ -114,7 +114,7 @@ class MadreDeleteView(DeleteView):
     template_name = "neonatos/madre_confirm_delete.html"
     success_url = reverse_lazy("neonatos:madre_list")
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         madre = self.get_object()
         registrar_accion(request, "Eliminación de madre", f"Se eliminó madre {madre.rut}")
         return super().delete(request, *args, **kwargs)
