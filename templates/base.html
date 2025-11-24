@@ -19,11 +19,11 @@
 
         {% if request.user.rol == "Supervisor" %}
             <span class="text-white fw-semibold me-3">
-                🧾 Supervisor: {{ request.user.nombre }}
+                🧾 Supervisor/a: {{ request.user.nombre }}
             </span>
         {% elif request.user.rol == "Administrador" %}
             <span class="text-white fw-semibold me-3">
-                🛠️ Administrador: {{ request.user.nombre }}
+                🛠️ Administrador/a: {{ request.user.nombre }}
             </span>
         {% endif %}
         <form action="{% url 'gestion_roles:logout' %}" method="post" class="d-inline">

@@ -20,7 +20,7 @@
     <div class="position-absolute top-50 end-0 translate-middle-y me-3"> 
         {% if request.user.rol == "Matrona" %}
           <span class="text-white fw-semibold me-3">
-            👩‍⚕️ Matrona: {{ request.user.nombre }}
+            👩‍⚕️ Matron/a: {{ request.user.nombre }}
           </span>
         {% endif %}
         <form action="{% url 'gestion_roles:logout' %}" method="post" class="d-inline">
