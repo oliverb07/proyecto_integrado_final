@@ -273,7 +273,7 @@ class RNDeleteView(DeleteView):
 
     def get_success_url(self):
         # Volver al detalle de la madre tras eliminar
-        return reverse_lazy("neonatos:madre_detail", args=[self.object.parto.madre.pk])
+        return reverse_lazy("neonatos:madre_list", args=[self.object.parto.madre.pk])
 
 @method_decorator([login_required, matrona_required], name='dispatch')
 class RecienNacidoDetailView(DetailView):
