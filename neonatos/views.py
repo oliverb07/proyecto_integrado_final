@@ -91,7 +91,7 @@ class MadreCreateView(CreateView):
 
     def get_success_url(self):
         # no se usa por el redirect inmediato
-        return reverse_lazy("neonatos:madre_detail", args=[self.object.pk])
+        return reverse_lazy("neonatos:madre_list", args=[self.object.pk])
     
 @method_decorator([login_required, matrona_required], name='dispatch')
 class MadreUpdateView(UpdateView):
@@ -156,7 +156,7 @@ class PartoCreateView(CreateView):
         
 
     def get_success_url(self):
-        return reverse_lazy("neonatos:madre_detail", args=[self.object.madre.pk])
+        return reverse_lazy("neonatos:madre_list", args=[self.object.madre.pk])
     
 @method_decorator([login_required, matrona_required], name='dispatch')   
 # === PARTO: editar y eliminar ===
