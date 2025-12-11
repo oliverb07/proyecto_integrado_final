@@ -40,6 +40,15 @@ def login_view(request):
             request.session['otp_code'] = otp
 
 
+            # Enviar otp por email
+            send_mail(
+                subject="Codigo de verificacion - Sistema Neonatos",
+                message=f"Tu codigo de verificación es: {otp}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
             return redirect('gestion_roles:verificar_otp') 
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
