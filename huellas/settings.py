@@ -172,13 +172,13 @@ LOGOUT_REDIRECT_URL = '/login/'
 # ================================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")  # CORREO EMISOR
 EMAIL_HOST_PASSWORD =  config("EMAIL_HOST_PASSWORD") # CONTRASEÑA DE APLICACIÓN
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = "Sistema Neonatos <sistemaneonatos@gmail.com>"
 
 # ================================
 # ⏱️ SESSIONES

@@ -44,7 +44,7 @@ def login_view(request):
             send_mail(
                 subject="Codigo de verificacion - Sistema Neonatos",
                 message=f"Tu codigo de verificación es: {otp}",
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=None,
                 recipient_list=[user.email],
                 fail_silently=False,
             )
