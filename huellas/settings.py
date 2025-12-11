@@ -170,16 +170,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 # ================================
 # 📧 EMAIL (Render necesita SMTP real, local sirve consola)
 # ================================
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp-relay.brevo.com"
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")  # CORREO EMISOR
-EMAIL_HOST_PASSWORD =  config("EMAIL_HOST_PASSWORD") # CONTRASEÑA DE APLICACIÓN
-DEFAULT_FROM_EMAIL = "Sistema Neonatos <sistemaneonatos@gmail.com>"
+EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 
 # ================================
 # ⏱️ SESSIONES
