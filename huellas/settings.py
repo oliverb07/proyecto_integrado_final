@@ -176,8 +176,8 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "sistemaneonatos@gmail.com"  # CORREO EMISOR
-EMAIL_HOST_PASSWORD = "xcqh abcw buly lmvr"  # CONTRASEÑA DE APLICACIÓN
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")  # CORREO EMISOR
+EMAIL_HOST_PASSWORD =  config("EMAIL_HOST_PASSWORD") # CONTRASEÑA DE APLICACIÓN
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ================================
