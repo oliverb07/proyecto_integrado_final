@@ -39,8 +39,6 @@ def login_view(request):
             request.session['pending_user_id'] = user.id
             request.session['otp_code'] = otp
 
-            # Mostrar OTP directamente en la pantalla (para Render)
-            messages.success(request, f"Tu código OTP es: {otp}")
 
             return redirect('gestion_roles:verificar_otp') 
         else:
